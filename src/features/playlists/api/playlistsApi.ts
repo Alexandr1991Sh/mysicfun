@@ -1,19 +1,15 @@
 // Во избежание ошибок импорт должен быть из `@reduxjs/toolkit/query/react`
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import type {FetchPlaylistsArgs, PlaylistsResponse} from "@/features/playlists/api/playlistsApi.types.ts";
+import type {
+    CreatePlaylistArgs, FetchPlaylistsArgs,
+    PlaylistData,
+    PlaylistsResponse,
+    UpdatePlaylistArgs
+} from "@/features/playlists/api/playlistsApi.types.ts";
+import {baseApi} from "@/app/api/baseApi.ts";
+import type {Images} from "@/common/types";
 
-// `createApi` - функция из `RTK Query`, позволяющая создать объект `API`
-// для взаимодействия с внешними `API` и управления состоянием приложения
-export const playlistsApi = createApi({
-    // `reducerPath` - имя куда будут сохранены состояние и экшены для этого `API`
-    reducerPath: 'playlistsApi',
-    // `baseQuery` - конфигурация для `HTTP-клиента`, который будет использоваться для отправки запросов
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_BASE_URL,
-        headers: {
-            'API-KEY': import.meta.env.VITE_API_KEY,
-        },
-    }),
+
+export const playlistsApi = baseApi.injectEndpoints({
     // `endpoints` - метод, возвращающий объект с эндпоинтами для `API`, описанными
     // с помощью функций, которые будут вызываться при вызове соответствующих методов `API`
     // (например `get`, `post`, `put`, `patch`, `delete`)
@@ -21,11 +17,63 @@ export const playlistsApi = createApi({
         // Типизация аргументов (<возвращаемый тип, тип query аргументов (`QueryArg`)>)
         // `query` по умолчанию создает запрос `get` и указание метода необязательно
         fetchPlaylists: build.query<PlaylistsResponse, FetchPlaylistsArgs>({
-            query: () => ({url: `playlists`}),
+            query: (params) => ({url: `playlists`, params}),
+            providesTags: ['Playlists']
+        }),
+        createPlaylist: build.mutation<{ data: PlaylistData }, CreatePlaylistArgs>({
+            query: (body) => ({
+                method: 'post',
+                url: 'playlists',
+                body
+            }),
+            invalidatesTags: ['Playlists']
+        }),
+        deletePlaylist: build.mutation<void, string>({
+            query: (playlistId) => ({
+                method: 'delete',
+                url: `playlists/${playlistId}`,
+            }),
+            invalidatesTags: ['Playlists']
+        }),
+        updatePlaylist: build.mutation<void, { playlistId: string, body: UpdatePlaylistArgs }>({
+            query: ({playlistId, body}) => ({
+                method: 'put',
+                url: `playlists/${playlistId}`,
+                body
+            }),
+            invalidatesTags: ['Playlists']
+        }),
+        uploadPlaylistCover: build.mutation<Images, { playlistId: string; file: File }>({
+            query: ({ playlistId, file }) => {
+                const formData = new FormData()
+                formData.append('file', file)
+                return {
+                    url: `playlists/${playlistId}/images/main`,
+                    method: 'post',
+                    body: formData,
+                }
+            },
+            invalidatesTags: ['Playlists'],
+        }),
+        deletePlaylistCover: build.mutation<void, { playlistId: string }>({
+            query: ({ playlistId }) => {
+                return {
+                    url: `playlists/${playlistId}/images/main`,
+                    method: 'delete',
+                }
+            },
+            invalidatesTags: ['Playlists'],
         }),
     }),
 })
 
 // `createApi` создает объект `API`, который содержит все эндпоинты в виде хуков,
 // определенные в свойстве `endpoints`
-export const {useFetchPlaylistsQuery} = playlistsApi
+export const {
+    useFetchPlaylistsQuery,
+    useCreatePlaylistMutation,
+    useDeletePlaylistMutation,
+    useUpdatePlaylistMutation,
+    useUploadPlaylistCoverMutation,
+    useDeletePlaylistCoverMutation
+} = playlistsApi
