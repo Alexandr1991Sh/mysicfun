@@ -2,9 +2,8 @@ import type {PlaylistData, UpdatePlaylistArgs} from "@/features/playlists/api/pl
 import {useDeletePlaylistMutation} from "@/features/playlists/api/playlistsApi.ts";
 import {useForm} from "react-hook-form";
 import {useState} from "react";
-import {EditPlaylistForm} from "@/features/playlists/ui/EditPlaylistForm/EditPlaylistForm.tsx";
-import {PlaylistItem} from "@/features/playlists/ui/PlaylistItem/PlaylistItem.tsx";
 import s from './PlaylistsList.module.css'
+import {EditPlaylistForm, PlaylistItem} from "@/features/playlists/ui";
 
 type Props = {
     playlists: PlaylistData[]

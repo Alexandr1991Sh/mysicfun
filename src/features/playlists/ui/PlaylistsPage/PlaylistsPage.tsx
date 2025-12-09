@@ -1,10 +1,9 @@
 import {useFetchPlaylistsQuery} from "@/features/playlists/api/playlistsApi.ts";
 import s from './PlaylistsPage.module.css'
-import {CreatePlaylistForm} from "@/features/playlists/ui/PlaylistsPage/CreatePlaylistForm/CreatePlaylistForm.tsx";
 import {type ChangeEvent, useState} from "react";
 import {useDebounceValue} from "@/common/hooks";
 import {Pagination} from "@/common/components";
-import {PlaylistsList} from "@/features/playlists/ui/PlaylistList/playlistList.tsx";
+import {CreatePlaylistForm, PlaylistsList} from "@/features/playlists/ui";
 
 export const PlaylistsPage = () => {
     const [search, setSearch] = useState('')
