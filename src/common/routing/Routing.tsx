@@ -1,5 +1,5 @@
 import {Route, Routes} from "react-router";
-import {MainPage} from "@/app/MainPage/MainPage.tsx";
+import {MainPage} from "@/app/ui/MainPage/MainPage.tsx";
 import {TracksPage} from "@/features/tracks/ui/TracksPage";
 import {PageNotFound} from "@/common/components";
 import {PlaylistsPage} from "@/features/playlists/ui";

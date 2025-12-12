@@ -7,16 +7,20 @@ export const baseApi = createApi({
 
     reducerPath: 'baseApi',
     // `baseQuery` - конфигурация для `HTTP-клиента`, который будет использоваться для отправки запросов
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_BASE_URL,
-        headers: {
-            'API-KEY': import.meta.env.VITE_API_KEY,
-        },
-        prepareHeaders: headers => {
-            headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
-            return headers
-        },
-    }),
+    baseQuery: async (args, api, extraOptions) => {
+        await new Promise(resolve => setTimeout(resolve, 2000)) // delay
+
+        return fetchBaseQuery({
+            baseUrl: import.meta.env.VITE_BASE_URL,
+            headers: {
+                'API-KEY': import.meta.env.VITE_API_KEY,
+            },
+            prepareHeaders: headers => {
+                headers.set('Authorization', `Bearer ${import.meta.env.VITE_ACCESS_TOKEN}`)
+                return headers
+            },
+        })(args, api, extraOptions)
+    },
     tagTypes: ['Playlists'],
     endpoints: () => ({})
 })

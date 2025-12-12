@@ -18,6 +18,7 @@ export const PlaylistsPage = () => {
         pageSize: pageSize,
     })
 
+    if (isLoading) return <h2>Skeleton loader...</h2>
 
     const changePageSizeHandler = (size: number) => {
         setPageSize(size)
@@ -32,6 +33,7 @@ export const PlaylistsPage = () => {
 
     return (
         <div className={s.container}>
+
             <h1>Playlists page</h1>
             <CreatePlaylistForm/>
             <input
